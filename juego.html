@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Instrumentos Musicales</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        #game-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .instrument-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+        .instrument-image:hover {
+            transform: scale(1.05);
+        }
+        #play-button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 8px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        #play-button:hover {
+            background-color: #45a049;
+        }
+        #feedback {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .correct {
+            color: #28a745;
+        }
+        .incorrect {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>¿Qué instrumento suena?</h1>
+
+    <button id="play-button">Reproducir Sonido 🎵</button>
+
+    <div id="game-container">
+        <img src="guitarra.jpg" alt="Guitarra" class="instrument-image" data-instrument="guitarra">
+        <img src="piano.jpg" alt="Piano" class="instrument-image" data-instrument="piano">
+        <img src="bateria.jpg" alt="Batería" class="instrument-image" data-instrument="bateria">
+    </div>
+
+    <p id="feedback">Haz clic en el botón para comenzar.</p>
+
+    <audio id="audio-guitarra" src="guitarra.mp3"></audio>
+    <audio id="audio-piano" src="piano.mp3"></audio>
+    <audio id="audio-bateria" src="bateria.mp3"></audio>
+
+    <script>
+        const playButton = document.getElementById('play-button');
+        const instrumentImages = document.querySelectorAll('.instrument-image');
+        const feedbackElement = document.getElementById('feedback');
+
+        // Definimos los instrumentos y sus sonidos
+        const instruments = [
+            { name: 'guitarra', audioId: 'audio-guitarra' },
+            { name: 'piano', audioId: 'audio-piano' },
+            { name: 'bateria', audioId: 'audio-bateria' }
+        ];
+
+        let currentInstrument;
+
+        function startNewRound() {
+            // Selecciona un instrumento al azar
+            const randomIndex = Math.floor(Math.random() * instruments.length);
+            currentInstrument = instruments[randomIndex];
+            
+            // Reproduce el sonido del instrumento seleccionado
+            document.getElementById(currentInstrument.audioId).play();
+            
+            // Limpia el mensaje de feedback
+            feedbackElement.textContent = '¡Escucha con atención!';
+            feedbackElement.className = '';
+        }
+
+        // Asigna el evento de clic a cada imagen
+        instrumentImages.forEach(image => {
+            image.addEventListener('click', () => {
+                const selectedInstrument = image.getAttribute('data-instrument');
+                if (!currentInstrument) {
+                    feedbackElement.textContent = '¡Presiona el botón "Reproducir Sonido" primero!';
+                    feedbackElement.className = 'incorrect';
+                    return;
+                }
+                checkAnswer(selectedInstrument);
+            });
+        });
+
+        // Asigna el evento de clic al botón de reproducir
+        playButton.addEventListener('click', startNewRound);
+
+        function checkAnswer(selectedInstrument) {
+            if (selectedInstrument === currentInstrument.name) {
+                feedbackElement.textContent = '¡Correcto! 🎉';
+                feedbackElement.className = 'correct';
+                // Puedes agregar aquí la lógica para la siguiente ronda, como un temporizador
+            } else {
+                feedbackElement.textContent = 'Incorrecto. Vuelve a intentarlo. 😔';
+                feedbackElement.className = 'incorrect';
+            }
+        }
+
+    </script>
+
+</body>
+</html>
